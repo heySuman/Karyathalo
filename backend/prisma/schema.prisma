@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// models
+model Client {
+  Client_ID      Int        @id @default(autoincrement())
+  Name           String
+  Email          String     @unique
+  Password       String
+  Phone          String
+  Payment_Method String?
+  Rating         Float?
+  Payments       Payment[]
+  Proposals      Proposal[]
+  Reviews        Review[]
+}
+
+model Job {
+  Job_ID      Int        @id @default(autoincrement())
+  Title       String
+  Description String
+  Budget      Float
+  Deadline    DateTime
+  Status      String
+  Proposals   Proposal[]
+}
+
+model Proposal {
+  Proposal_ID     Int        @id @default(autoincrement())
+  Freelancer      Freelancer @relation(fields: [Freelancer_ID], references: [Freelancer_ID])
+  Freelancer_ID   Int
+  Job             Job        @relation(fields: [Job_ID], references: [Job_ID])
+  Job_ID          Int
+  Description     String
+  Bid_Amount      Float
+  Status          String
+  Client          Client?    @relation(fields: [clientClient_ID], references: [Client_ID])
+  clientClient_ID Int?
+}
+
+model Freelancer {
+  Freelancer_ID  Int             @id @default(autoincrement())
+  Name           String
+  Email          String          @unique
+  Password       String
+  Phone          String
+  Skills         String
+  Rating         Float?
+  ProfilePicture String?
+  Certifications Certification[]
+  Experiences    Experience[]
+  Proposals      Proposal[]
+  Payments       Payment[]
+  Reviews        Review[]
+}
+
+model Certification {
+  Certification_ID Int        @id @default(autoincrement())
+  Freelancer       Freelancer @relation(fields: [Freelancer_ID], references: [Freelancer_ID])
+  Freelancer_ID    Int
+  Title            String
+  IssuedBy         String
+  DateIssued       DateTime
+  ValidUntil       DateTime?
+}
+
+model Experience {
+  Experience_ID Int        @id @default(autoincrement())
+  Freelancer    Freelancer @relation(fields: [Freelancer_ID], references: [Freelancer_ID])
+  Freelancer_ID Int
+  Company       String
+  Role          String
+  StartDate     DateTime
+  EndDate       DateTime?
+  Description   String
+}
+
+model Payment {
+  Payment_ID    Int        @id @default(autoincrement())
+  Client        Client     @relation(fields: [Client_ID], references: [Client_ID])
+  Client_ID     Int
+  Freelancer    Freelancer @relation(fields: [Freelancer_ID], references: [Freelancer_ID])
+  Freelancer_ID Int
+  Amount        Float
+  Date          DateTime
+  Status        String
+}
+
+model Review {
+  Review_ID     Int        @id @default(autoincrement())
+  Client        Client     @relation(fields: [Client_ID], references: [Client_ID])
+  Client_ID     Int
+  Freelancer    Freelancer @relation(fields: [Freelancer_ID], references: [Freelancer_ID])
+  Freelancer_ID Int
+  Rating        Float
+  Comment       String
+  Date          DateTime
+}
