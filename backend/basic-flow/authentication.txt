@@ -1,0 +1,9 @@
+# Authentication
+
+User Creation
+
+Freelancers/Client:
+
+- User email
+- Password 
+- User type
