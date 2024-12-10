@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 export const Header = () => {
   return (
     <>
-      <header className="lg:w-2/3 m-auto p-5">
+      <header className="lg:w-2/3 m-auto p-5 sticky top-0 border-b bg-white">
         <nav className="flex items-center gap-12">
           <NavLink to={"/"} className={"text-2xl font-bold text-[#0042C6]"}>
             Karyathalo
