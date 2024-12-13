@@ -14,17 +14,56 @@ datasource db {
 }
 
 // models
+
+enum ROLE {
+  CLIENT
+  FREELANCER
+}
+
+model User {
+  User_ID    Int         @id @default(autoincrement())
+  Name       String
+  Email      String      @unique
+  Password   String
+  Role       ROLE        @default(FREELANCER)
+  Client     Client?
+  Freelancer Freelancer?
+}
+
 model Client {
   Client_ID      Int        @id @default(autoincrement())
   Name           String
   Email          String     @unique
-  Password       String
+  User           User       @relation(fields: [Email], references: [Email])
   Phone          String
   Payment_Method String?
   Rating         Float?
-  Payments       Payment[]
   Proposals      Proposal[]
   Reviews        Review[]
+  Payments       Payment[]
+}
+
+model Freelancer {
+  Freelancer_ID  Int             @id @default(autoincrement())
+  Name           String
+  Phone          String
+  Skills         String[]
+  Rating         Float?
+  ProfilePicture String?
+  Email          String          @unique
+  User           User            @relation(fields: [Email], references: [Email])
+  Certifications Certification[]
+  Experiences    Experience[]
+  Proposals      Proposal[]
+  Payments       Payment[]
+  Reviews        Review[]
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
 
 model Job {
@@ -33,7 +72,7 @@ model Job {
   Description String
   Budget      Float
   Deadline    DateTime
-  Status      String
+  Status      JobStatus  @default(OPEN)
   Proposals   Proposal[]
 }
 
@@ -48,22 +87,6 @@ model Proposal {
   Status          String
   Client          Client?    @relation(fields: [clientClient_ID], references: [Client_ID])
   clientClient_ID Int?
-}
-
-model Freelancer {
-  Freelancer_ID  Int             @id @default(autoincrement())
-  Name           String
-  Email          String          @unique
-  Password       String
-  Phone          String
-  Skills         String
-  Rating         Float?
-  ProfilePicture String?
-  Certifications Certification[]
-  Experiences    Experience[]
-  Proposals      Proposal[]
-  Payments       Payment[]
-  Reviews        Review[]
 }
 
 model Certification {
